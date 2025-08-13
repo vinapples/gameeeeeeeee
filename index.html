@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OUR COMMUNITY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pink-light: #FFC0CB;
+            --pink-medium: #FF69B4;
+            --pink-dark: #C71585;
+            --pixel-border: 4px;
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16"><path fill="%23FFC0CB" d="M7 0L0 7l7 7V9h2v5l7-7-7-7v5H7V0z"/></svg>'), auto;
+            background-color: #ffe4e1;
+            
+            /* Latar belakang pixel-art */
+            background-image: 
+                linear-gradient(45deg, #FFC0CB 25%, transparent 25%),
+                linear-gradient(-45deg, #FFC0CB 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #FFC0CB 75%),
+                linear-gradient(-45deg, transparent 75%, #FFC0CB 75%);
+            background-size: 20px 20px;
+        }
+
+        .pixel-border {
+            border: var(--pixel-border) solid var(--pink-dark);
+            border-image: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="16" height="16" fill="%23C71585"/><path d="M0 4h16V0H0v4zM0 16h16V12H0v4zM0 12h4V4H0v8zM12 12h4V4h-4v8z" fill="%23FFC0CB"/></svg>') 4 repeat;
+            image-rendering: pixelated;
+        }
+
+        .pixel-btn {
+            background-color: var(--pink-medium);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: var(--pixel-border) solid var(--pink-dark);
+            text-shadow: 2px 2px var(--pink-dark);
+            box-shadow: 4px 4px 0px 0px var(--pink-dark);
+            transition: all 0.1s ease-in-out;
+            image-rendering: pixelated;
+        }
+        .pixel-btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px var(--pink-dark);
+        }
+        .pixel-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px 0px var(--pink-dark);
+        }
+
+        .typing-animation {
+            white-space: nowrap;
+            overflow: hidden;
+            animation: typing 2.5s steps(30, end), blink-caret 0.75s step-end infinite;
+            border-right: 2px solid var(--pink-dark);
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--pink-dark) }
+        }
+
+        /* Kelas untuk transisi layar yang halus */
+        .screen-container {
+            transition: opacity 0.5s ease-in-out;
+            display: none; /* Default hidden */
+        }
+        .screen-container.visible {
+            display: flex; /* Flex untuk centering */
+            opacity: 1;
+        }
+        
+        /* Gaya untuk game cat runner */
+        .cat-game-container {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        #cat-game-canvas {
+            background-color: #add8e6;
+            border: 4px solid var(--pink-dark);
+        }
+        .game-over-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 2rem;
+            background-color: white;
+            border: 4px solid var(--pink-dark);
+            text-align: center;
+            z-index: 20;
+            box-shadow: 8px 8px 0px 0px var(--pink-dark);
+            display: none; /* Default hidden */
+        }
+
+        /* Gaya untuk quiz game */
+        .quiz-option {
+            background-color: #fff;
+            border: 2px solid var(--pink-dark);
+            padding: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .quiz-option:hover {
+            transform: scale(1.05);
+            background-color: #ffb6c1;
+        }
+        .quiz-text-black {
+            color: #000; /* Warna teks hitam untuk kuis */
+        }
+        
+    </style>
+</head>
+<body class="bg-pink-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Kontainer utama dengan transisi -->
+    <div id="app-container" class="max-w-4xl w-full p-8 bg-white/70 backdrop-blur-sm rounded-lg pixel-border text-center text-pink-900 shadow-xl relative flex flex-col items-center justify-center">
+
+        <!-- Halaman Utama (Screen 1) -->
+        <div id="main-screen" class="screen-container visible flex-col space-y-8">
+            <h1 id="welcome-message" class="text-3xl font-bold mb-4"></h1>
+            <div class="flex items-center justify-center mb-8">
+                <div class="w-16 h-1 bg-pink-300"></div>
+                <h2 id="app-title" class="text-6xl font-bold mx-4 text-pink-dark typing-animation"></h2>
+                <div class="w-16 h-1 bg-pink-300"></div>
+            </div>
+
+            <div id="community-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Tombol Komunitas akan di-generate oleh JS -->
+            </div>
+
+            <div class="mt-8 flex justify-center space-x-4">
+                <button id="game-cat-btn" class="pixel-btn text-xl font-bold">
+                    <i class="fas fa-cat"></i> Cat Runner
+                </button>
+                <button id="game-quiz-btn" class="pixel-btn text-xl font-bold">
+                    <i class="fas fa-question"></i> Quiz Tebak-tebakan
+                </button>
+            </div>
+        </div>
+
+        <!-- Halaman Informasi Komunitas (Screen 2) -->
+        <div id="community-info-screen" class="screen-container flex-col space-y-4 text-left">
+            <h3 id="info-title" class="text-4xl font-bold text-pink-dark text-center mb-4"></h3>
+            <p id="info-content" class="text-lg leading-relaxed"></p>
+            <button id="back-btn-info" class="pixel-btn mt-6">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </button>
+        </div>
+
+        <!-- Halaman Game Cat Runner (Screen 3) -->
+        <div id="game-cat-screen" class="screen-container flex-col items-center space-y-4 relative">
+            <h3 class="text-4xl font-bold text-pink-dark">Cat Runner</h3>
+            <canvas id="cat-game-canvas" width="600" height="250" class="pixel-border"></canvas>
+            <p id="cat-game-score" class="text-2xl font-bold">Score: 0</p>
+            <button id="back-btn-cat" class="pixel-btn">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </button>
+            <!-- Custom Game Over Message Box -->
+            <div id="game-over-box" class="game-over-box flex-col">
+                <h4 class="text-3xl font-bold text-pink-dark mb-4">Game Over!</h4>
+                <p id="final-score" class="text-xl mb-4">Skor Akhir: 0</p>
+                <button id="play-again-btn" class="pixel-btn mb-2">Main Lagi</button>
+            </div>
+        </div>
+
+        <!-- Halaman Game Quiz (Screen 4) -->
+        <div id="game-quiz-screen" class="screen-container flex-col items-center space-y-4">
+            <h3 class="text-4xl font-bold text-pink-dark">Quiz Tebak-tebakan</h3>
+            <div class="w-full max-w-lg p-6 bg-white rounded-lg pixel-border quiz-text-black">
+                <p id="quiz-question" class="text-xl font-bold mb-4"></p>
+                <div id="quiz-options" class="grid grid-cols-1 gap-4">
+                    <!-- Opsi quiz akan di-generate oleh JS -->
+                </div>
+                <div id="quiz-feedback" class="mt-4 text-center text-2xl font-bold text-pink-dark"></div>
+            </div>
+            <button id="back-btn-quiz" class="pixel-btn mt-6">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Konfigurasi dan Data ---
+            const communities = {
+                'olahraga': {
+                    title: 'Komunitas Olahraga',
+                    icon: 'fas fa-basketball-ball',
+                    info: 'Komunitas olahraga adalah tempat berkumpulnya individu dengan minat yang sama dalam berbagai cabang olahraga. Di sini, Anda bisa berbagi tips, mencari teman sparring, dan berdiskusi tentang pertandingan terbaru. Bergabunglah untuk menjaga kesehatan dan semangat kompetisi!'
+                },
+                'roblox': {
+                    title: 'Komunitas Game Roblox',
+                    icon: 'fas fa-gamepad',
+                    info: 'Komunitas ini didedikasikan untuk para penggemar Roblox. Anda dapat bertukar pengalaman, berbagi kreasi game, dan menemukan teman baru untuk bermain bersama. Selalu ikuti aturan dan jaga etika, ya!'
+                },
+                'makanan': {
+                    title: 'Komunitas Makanan',
+                    icon: 'fas fa-utensils',
+                    info: 'Surga bagi para pecinta kuliner! Di komunitas makanan, kita bisa berbagi resep, rekomendasi tempat makan, dan tips memasak. Dari makanan lokal hingga internasional, mari kita jelajahi dunia rasa bersama.'
+                },
+                'belajar': {
+                    title: 'Komunitas Belajar',
+                    icon: 'fas fa-book',
+                    info: 'Komunitas belajar adalah wadah untuk saling membantu dalam proses pendidikan. Anda bisa bertanya tentang pelajaran, berdiskusi materi, dan menemukan motivasi untuk terus berkembang. Belajar jadi lebih menyenangkan jika dilakukan bersama!'
+                },
+                'desain': {
+                    title: 'Komunitas Desain',
+                    icon: 'fas fa-pencil-ruler',
+                    info: 'Tempat berkumpulnya para kreator dan desainer. Di sini, Anda dapat berbagi portofolio, memberikan feedback konstruktif, dan belajar teknik-teknik baru. Ayo wujudkan ide-ide kreatifmu dan jadikan dunia lebih indah melalui desain.'
+                }
+            };
+            
+            const quizQuestions = [
+                {
+                    question: 'Apa manfaat bergabung dengan komunitas olahraga?',
+                    options: ['Membuang waktu', 'Menambah musuh', 'Menjaga kesehatan dan semangat', 'Membuat bosan'],
+                    answer: 'Menjaga kesehatan dan semangat',
+                    info: 'Komunitas olahraga membantu menjaga kesehatan dan semangat kompetisi.'
+                },
+                {
+                    question: 'Bagaimana cara terbaik berinteraksi di komunitas game Roblox?',
+                    options: ['Menyebarkan kebencian', 'Berbagi kreasi dan mencari teman', 'Menyendiri', 'Mencuri akun orang lain'],
+                    answer: 'Berbagi kreasi dan mencari teman',
+                    info: 'Berinteraksi positif, berbagi kreasi, dan mencari teman adalah kunci.'
+                },
+                {
+                    question: 'Apa yang bisa Anda temukan di komunitas makanan?',
+                    options: ['Pemandu wisata', 'Film horor', 'Resep dan rekomendasi tempat makan', 'Buku matematika'],
+                    answer: 'Resep dan rekomendasi tempat makan',
+                    info: 'Resep baru dan tempat makan enak bisa ditemukan di sana.'
+                },
+                {
+                    question: 'Tujuan utama komunitas belajar adalah?',
+                    options: ['Mencontek', 'Saling membantu dan berdiskusi', 'Bermain game', 'Membaca komik'],
+                    answer: 'Saling membantu dan berdiskusi',
+                    info: 'Komunitas belajar dirancang untuk saling mendukung dalam proses pendidikan.'
+                },
+                {
+                    question: 'Apa manfaat berbagi portofolio di komunitas desain?',
+                    options: ['Membuat orang lain iri', 'Menerima kritik dan saran', 'Menyimpan rahasia', 'Meniru karya orang lain'],
+                    answer: 'Menerima kritik dan saran',
+                    info: 'Feedback sangat penting untuk pengembangan diri seorang desainer.'
+                }
+            ];
+
+            // --- Elemen DOM ---
+            const welcomeMessageEl = document.getElementById('welcome-message');
+            const appTitleEl = document.getElementById('app-title');
+            const communityListEl = document.getElementById('community-list');
+            const mainScreenEl = document.getElementById('main-screen');
+            const communityInfoScreenEl = document.getElementById('community-info-screen');
+            const infoTitleEl = document.getElementById('info-title');
+            const infoContentEl = document.getElementById('info-content');
+            const backBtnInfoEl = document.getElementById('back-btn-info');
+            const gameCatBtnEl = document.getElementById('game-cat-btn');
+            const gameQuizBtnEl = document.getElementById('game-quiz-btn');
+            const gameCatScreenEl = document.getElementById('game-cat-screen');
+            const gameQuizScreenEl = document.getElementById('game-quiz-screen');
+            const backBtnCatEl = document.getElementById('back-btn-cat');
+            const backBtnQuizEl = document.getElementById('back-btn-quiz');
+            const gameOverBoxEl = document.getElementById('game-over-box');
+            const finalScoreEl = document.getElementById('final-score');
+            const playAgainBtnEl = document.getElementById('play-again-btn');
+            const quizQuestionEl = document.getElementById('quiz-question');
+            const quizOptionsEl = document.getElementById('quiz-options');
+            const quizFeedbackEl = document.getElementById('quiz-feedback');
+
+
+            // --- Logika Halaman dan Animasi dengan transisi halus ---
+            const screens = [mainScreenEl, communityInfoScreenEl, gameCatScreenEl, gameQuizScreenEl];
+            function showScreen(screenToShow) {
+                screens.forEach(screen => {
+                    screen.classList.remove('visible');
+                    screen.style.opacity = '0';
+                });
+                
+                // Transisi fade-in
+                setTimeout(() => {
+                   screenToShow.classList.add('visible');
+                   screenToShow.style.opacity = '1';
+                }, 10);
+                
+                stopCatGame();
+            }
+            
+            // Animasi judul dan pesan selamat datang
+            welcomeMessageEl.textContent = 'Welcome winners!';
+            appTitleEl.textContent = '';
+            animateTyping(appTitleEl, 'OUR COMMUNITY', 100);
+            
+            function animateTyping(element, text, speed) {
+                let i = 0;
+                function type() {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(type, speed);
+                    }
+                }
+                type();
+            }
+
+            // Generate tombol komunitas
+            for (const key in communities) {
+                const community = communities[key];
+                const button = document.createElement('button');
+                button.className = 'pixel-btn text-xl font-bold flex flex-col items-center justify-center space-y-2';
+                button.innerHTML = `<i class="${community.icon} text-4xl"></i><span>${community.title}</span>`;
+                button.addEventListener('click', () => {
+                    infoTitleEl.textContent = community.title;
+                    infoContentEl.textContent = community.info;
+                    showScreen(communityInfoScreenEl);
+                });
+                communityListEl.appendChild(button);
+            }
+
+            // Event listener tombol kembali
+            backBtnInfoEl.addEventListener('click', () => showScreen(mainScreenEl));
+            backBtnCatEl.addEventListener('click', () => {
+                showScreen(mainScreenEl);
+                stopCatGame();
+            });
+            backBtnQuizEl.addEventListener('click', () => showScreen(mainScreenEl));
+
+
+            // --- Game Cat Runner ---
+            const catGameCanvas = document.getElementById('cat-game-canvas');
+            const catGameCtx = catGameCanvas.getContext('2d');
+            const catGameScoreEl = document.getElementById('cat-game-score');
+            
+            let catGameRunning = false;
+            let cat = { x: 50, y: 150, width: 30, height: 30, vy: 0, gravity: 0.5, jumping: false };
+            let obstacles = [];
+            let score = 0;
+            let gameFrame = 0;
+            
+            function drawCat() {
+                catGameCtx.fillStyle = '#ff69b4';
+                catGameCtx.fillRect(cat.x, cat.y, cat.width, cat.height);
+                catGameCtx.fillStyle = '#fff';
+                catGameCtx.fillRect(cat.x + 5, cat.y + 5, 5, 5); // Mata
+                catGameCtx.fillRect(cat.x + 20, cat.y + 5, 5, 5); // Mata
+            }
+
+            function drawObstacles() {
+                catGameCtx.fillStyle = '#C71585';
+                obstacles.forEach(obs => {
+                    catGameCtx.fillRect(obs.x, obs.y, obs.width, obs.height);
+                });
+            }
+
+            function updateCat() {
+                if (cat.jumping) {
+                    cat.vy += cat.gravity;
+                    cat.y += cat.vy;
+                    if (cat.y >= 150) {
+                        cat.y = 150;
+                        cat.jumping = false;
+                        cat.vy = 0;
+                    }
+                }
+            }
+
+            function updateObstacles() {
+                if (gameFrame % 100 === 0) { // Munculkan rintangan baru
+                    let width = 20;
+                    let height = Math.random() * 20 + 20;
+                    let x = catGameCanvas.width;
+                    let y = 180 - height;
+                    obstacles.push({ x, y, width, height });
+                }
+                obstacles.forEach(obs => {
+                    obs.x -= 5; // Kecepatan rintangan
+                });
+                obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
+            }
+
+            function checkCollision() {
+                for (const obs of obstacles) {
+                    if (cat.x < obs.x + obs.width &&
+                        cat.x + cat.width > obs.x &&
+                        cat.y < obs.y + obs.height &&
+                        cat.y + cat.height > obs.y) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function gameLoop() {
+                if (!catGameRunning) return;
+                catGameCtx.clearRect(0, 0, catGameCanvas.width, catGameCanvas.height);
+                
+                // Gambar tanah
+                catGameCtx.fillStyle = '#C71585';
+                catGameCtx.fillRect(0, 180, catGameCanvas.width, 2);
+
+                drawCat();
+                drawObstacles();
+                updateCat();
+                updateObstacles();
+
+                if (checkCollision()) {
+                    catGameRunning = false;
+                    finalScoreEl.textContent = `Skor Akhir: ${score}`;
+                    gameOverBoxEl.style.display = 'flex';
+                    // Stop game
+                    return; 
+                } else {
+                    score++;
+                    catGameScoreEl.textContent = `Score: ${score}`;
+                    gameFrame++;
+                    requestAnimationFrame(gameLoop);
+                }
+            }
+
+            function jump() {
+                if (!cat.jumping) {
+                    cat.jumping = true;
+                    cat.vy = -10;
+                }
+            }
+            
+            function startCatGame() {
+                gameOverBoxEl.style.display = 'none';
+                catGameRunning = true;
+                cat = { x: 50, y: 150, width: 30, height: 30, vy: 0, gravity: 0.5, jumping: false };
+                obstacles = [];
+                score = 0;
+                gameFrame = 0;
+                catGameScoreEl.textContent = `Score: 0`;
+                gameLoop();
+            }
+
+            function stopCatGame() {
+                catGameRunning = false;
+                gameOverBoxEl.style.display = 'none';
+            }
+
+            gameCatBtnEl.addEventListener('click', () => {
+                showScreen(gameCatScreenEl);
+                startCatGame();
+            });
+
+            playAgainBtnEl.addEventListener('click', () => {
+                startCatGame();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (catGameRunning && (e.code === 'Space' || e.code === 'ArrowUp')) {
+                    jump();
+                }
+            });
+            catGameCanvas.addEventListener('click', () => {
+                if (catGameRunning) {
+                    jump();
+                }
+            });
+
+
+            // --- Game Quiz Tebak-tebakan ---
+            let currentQuestionIndex = 0;
+            let quizScore = 0;
+
+            function showQuestion() {
+                quizFeedbackEl.textContent = '';
+                const questionData = quizQuestions[currentQuestionIndex];
+                quizQuestionEl.textContent = questionData.question;
+                quizOptionsEl.innerHTML = '';
+                questionData.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.className = 'quiz-option rounded-md text-lg pixel-btn quiz-text-black'; // Menambahkan kelas untuk teks hitam
+                    button.addEventListener('click', () => checkAnswer(option, questionData));
+                    quizOptionsEl.appendChild(button);
+                });
+            }
+
+            async function checkAnswer(selected, questionData) {
+                const buttons = quizOptionsEl.querySelectorAll('button');
+                buttons.forEach(btn => btn.disabled = true);
+                
+                // Reset warna teks feedback
+                quizFeedbackEl.style.color = '#C71585';
+
+                if (selected === questionData.answer) {
+                    quizFeedbackEl.textContent = 'Jawaban Benar! �';
+                    quizFeedbackEl.style.color = '#38a169'; // hijau
+                    quizScore++;
+                } else {
+                    // Jawaban salah, lakukan riset
+                    quizFeedbackEl.textContent = 'Jawaban Salah... Melakukan riset untuk Anda...';
+                    
+                    // Ini adalah placeholder untuk panggilan API nyata
+                    // const apiKey = "";
+                    // const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                    // const prompt = `Fakta tentang "${questionData.question}" Jawaban benar adalah "${questionData.answer}".`;
+                    // const response = await fetch(apiUrl, {
+                    //     method: 'POST',
+                    //     headers: { 'Content-Type': 'application/json' },
+                    //     body: JSON.stringify({
+                    //         contents: [{ parts: [{ text: prompt }] }]
+                    //     })
+                    // });
+                    // const result = await response.json();
+                    
+                    // Untuk demo, kita gunakan setTimeout
+                    setTimeout(() => {
+                        const researchResult = questionData.info; // Mengambil info dari data kuis
+                        quizFeedbackEl.textContent = `Jawaban Salah. Jawaban yang benar adalah: ${questionData.answer}. Tahukah Anda? ${researchResult}`;
+                    }, 2000);
+                }
+
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < quizQuestions.length) {
+                        showQuestion();
+                    } else {
+                        quizFeedbackEl.textContent = `Kuis selesai! Skor Anda: ${quizScore}/${quizQuestions.length}`;
+                        quizFeedbackEl.style.color = '#C71585';
+                        currentQuestionIndex = 0;
+                        quizScore = 0;
+                        setTimeout(() => showScreen(mainScreenEl), 3000); // Kembali ke menu utama
+                    }
+                }, 4000); // Delay lebih lama untuk memberi waktu riset
+            }
+
+            gameQuizBtnEl.addEventListener('click', () => {
+                showScreen(gameQuizScreenEl);
+                currentQuestionIndex = 0;
+                quizScore = 0;
+                showQuestion();
+            });
+        });
+    </script>
+</body>
+</html>
+�
