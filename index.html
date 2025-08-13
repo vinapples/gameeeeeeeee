@@ -96,7 +96,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -5-0%);
             padding: 2rem;
             background-color: white;
             border: 4px solid var(--pink-dark);
@@ -201,27 +201,27 @@
                 'olahraga': {
                     title: 'Komunitas Olahraga',
                     icon: 'fas fa-basketball-ball',
-                    info: 'Komunitas olahraga adalah tempat berkumpulnya individu dengan minat yang sama dalam berbagai cabang olahraga. Di sini, Anda bisa berbagi tips, mencari teman sparring, dan berdiskusi tentang pertandingan terbaru. Bergabunglah untuk menjaga kesehatan dan semangat kompetisi!'
+                    info: 'Olahraga adalah aktivitas fisik terstruktur yang tak hanya bermanfaat untuk menjaga kesehatan fisik, seperti memperkuat jantung dan otot, tetapi juga memiliki dampak signifikan pada kesehatan mental, yaitu dengan mengurangi stres dan meningkatkan suasana hati melalui pelepasan hormon endorfin. Lebih dari itu, olahraga juga mengajarkan berbagai nilai penting seperti kerja sama tim, kedisiplinan, dan sportivitas, menjadikannya sebuah kegiatan yang holistik untuk membangun karakter dan meningkatkan kualitas hidup secara keseluruhan.!'
                 },
                 'roblox': {
                     title: 'Komunitas Game Roblox',
                     icon: 'fas fa-gamepad',
-                    info: 'Komunitas ini didedikasikan untuk para penggemar Roblox. Anda dapat bertukar pengalaman, berbagi kreasi game, dan menemukan teman baru untuk bermain bersama. Selalu ikuti aturan dan jaga etika, ya!'
+                    info: 'Roblox adalah platform online tempat jutaan pengguna dapat membuat dan memainkan berbagai macam permainan yang dibuat oleh komunitas, dari petualangan seru hingga simulasi sosial'
                 },
                 'makanan': {
                     title: 'Komunitas Makanan',
                     icon: 'fas fa-utensils',
-                    info: 'Surga bagi para pecinta kuliner! Di komunitas makanan, kita bisa berbagi resep, rekomendasi tempat makan, dan tips memasak. Dari makanan lokal hingga internasional, mari kita jelajahi dunia rasa bersama.'
+                    info: 'Makanan bukan hanya sumber energi bagi tubuh, tetapi juga memiliki peran penting dalam budaya dan kesehatan, di mana pola makan seimbang sangat krusial untuk menjaga fungsi tubuh optimal. '
                 },
                 'belajar': {
                     title: 'Komunitas Belajar',
                     icon: 'fas fa-book',
-                    info: 'Komunitas belajar adalah wadah untuk saling membantu dalam proses pendidikan. Anda bisa bertanya tentang pelajaran, berdiskusi materi, dan menemukan motivasi untuk terus berkembang. Belajar jadi lebih menyenangkan jika dilakukan bersama!'
+                    info: 'Untuk mencapai kesuksesan akademis, studi tips yang efektif, seperti membuat jadwal teratur, menggunakan teknik active recall, dan menjaga fokus, dapat membantu siswa menguasai materi dengan lebih baik.'
                 },
                 'desain': {
                     title: 'Komunitas Desain',
                     icon: 'fas fa-pencil-ruler',
-                    info: 'Tempat berkumpulnya para kreator dan desainer. Di sini, Anda dapat berbagi portofolio, memberikan feedback konstruktif, dan belajar teknik-teknik baru. Ayo wujudkan ide-ide kreatifmu dan jadikan dunia lebih indah melalui desain.'
+                    info: 'Desain komunitas berfokus pada menciptakan lingkungan dan sistem yang mendorong interaksi positif, kolaborasi, serta rasa kepemilikan di antara para anggotanya, baik di ruang fisik maupun online.'
                 }
             };
             
@@ -315,7 +315,7 @@
                 type();
             }
 
-            // Generate tombol komunitas
+            // Generate tombol komunitas dengan ikon
             for (const key in communities) {
                 const community = communities[key];
                 const button = document.createElement('button');
@@ -377,15 +377,23 @@
             }
 
             function updateObstacles() {
-                if (gameFrame % 100 === 0) { // Munculkan rintangan baru
+                // Munculkan rintangan baru
+                if (gameFrame % 100 === 0) { 
                     let width = 20;
                     let height = Math.random() * 20 + 20;
                     let x = catGameCanvas.width;
                     let y = 180 - height;
-                    obstacles.push({ x, y, width, height });
+                    // Tambahkan properti `passed` untuk melacak apakah skor sudah ditambahkan
+                    obstacles.push({ x, y, width, height, passed: false });
                 }
                 obstacles.forEach(obs => {
                     obs.x -= 5; // Kecepatan rintangan
+                    // Periksa apakah rintangan sudah dilewati dan skor belum ditambahkan
+                    if (obs.x + obs.width < cat.x && !obs.passed) {
+                        score += 100; // Tambah skor 100
+                        obs.passed = true; // Tandai rintangan sudah dilewati
+                        catGameScoreEl.textContent = `Score: ${score}`;
+                    }
                 });
                 obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
             }
@@ -422,8 +430,6 @@
                     // Stop game
                     return; 
                 } else {
-                    score++;
-                    catGameScoreEl.textContent = `Score: ${score}`;
                     gameFrame++;
                     requestAnimationFrame(gameLoop);
                 }
@@ -499,7 +505,7 @@
                 quizFeedbackEl.style.color = '#C71585';
 
                 if (selected === questionData.answer) {
-                    quizFeedbackEl.textContent = 'Jawaban Benar! �';
+                    quizFeedbackEl.textContent = 'Jawaban Benar! 🎉';
                     quizFeedbackEl.style.color = '#38a169'; // hijau
                     quizScore++;
                 } else {
@@ -550,4 +556,3 @@
     </script>
 </body>
 </html>
-�
